@@ -8,6 +8,9 @@
 
 Multi-dimensional arrays with broadcasting and lazy computing.
 
+> Fork description: Since xtensor>=0.26 requires C++17 or C++20, this fork tries to maintain the `0.25.0` branch for latest fixes and features,
+> while keep the public interfaces of `0.25.0`.
+
 ## Introduction
 
 `xtensor` is a C++ library meant for numerical analysis with multi-dimensional
