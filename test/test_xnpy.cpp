@@ -176,4 +176,44 @@ namespace xt
         xarray<char> adc = dc;
         EXPECT_EQ(adc(0, 0), 0);
     }
+
+    TEST(xnpy, load_long_header_length)
+    {
+        const char magic[] = "\x93NUMPY";
+        const std::size_t header_len = 246;
+        std::string header = "{'descr': '" + detail::build_typestring<std::int64_t>()
+                             + "', 'fortran_order': False, 'shape': (3,), }";
+        header.resize(header_len - 1, ' ');
+        header += '\n';
+
+        std::int64_t data[3] = {10, 20, 30};
+
+        std::stringstream ss;
+
+        SUBCASE("v1.0")
+        {
+            const unsigned char version[2] = {1, 0};
+            ss.write(magic, 6);
+            ss.write(reinterpret_cast<const char*>(version), 2);
+            ss.put(char(header_len & 0xff));
+            ss.put(char((header_len >> 8) & 0xff));
+            ss.write(header.data(), static_cast<std::streamsize>(header.size()));
+        }
+
+        SUBCASE("v2.0")
+        {
+            const unsigned char version[2] = {2, 0};
+            const unsigned char header_len_le32[4] = {0xf6, 0x00, 0x00, 0x00};
+            ss.write(magic, 6);
+            ss.write(reinterpret_cast<const char*>(version), 2);
+            ss.write(reinterpret_cast<const char*>(header_len_le32), 4);
+            ss.write(header.data(), static_cast<std::streamsize>(header.size()));
+        }
+
+        ss.write(reinterpret_cast<const char*>(data), sizeof(data));
+
+        auto loaded = load_npy<std::int64_t>(ss);
+        xarray<std::int64_t> expected = {10, 20, 30};
+        EXPECT_TRUE(all(equal(loaded, expected)));
+    }
 }

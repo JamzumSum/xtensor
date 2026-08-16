@@ -155,6 +155,41 @@ namespace xt
         EXPECT_EQ(view0, view1);
     }
 
+    TEST(xview, negative_step)
+    {
+        view_shape_type shape = {3, 4};
+        xarray<double> a(shape);
+        std::vector<double> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        std::copy(data.cbegin(), data.cend(), a.template begin<layout_type::row_major>());
+
+        auto view0 = view(a, 1, range(3, 0, -1));
+        EXPECT_EQ(size_t(1), view0.dimension());
+        EXPECT_EQ(size_t(3), view0.shape(0));
+        EXPECT_EQ(a(1, 3), view0(0));
+        EXPECT_EQ(a(1, 2), view0(1));
+        EXPECT_EQ(a(1, 1), view0(2));
+    }
+
+    TEST(xview, size_zero)
+    {
+        view_shape_type shape = {3, 4};
+        xarray<double> a(shape);
+        std::vector<double> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        std::copy(data.cbegin(), data.cend(), a.template begin<layout_type::row_major>());
+
+        auto view0 = view(a, 1, range(0, 0));
+        EXPECT_EQ(size_t(1), view0.dimension());
+        EXPECT_EQ(size_t(0), view0.shape(0));
+
+        auto view1 = view(a, 1, range(3, 0, 1));
+        EXPECT_EQ(size_t(1), view1.dimension());
+        EXPECT_EQ(size_t(0), view1.shape(0));
+
+        auto view2 = view(a, 1, range(0, 3, -1));
+        EXPECT_EQ(size_t(1), view2.dimension());
+        EXPECT_EQ(size_t(0), view2.shape(0));
+    }
+
     TEST(xview, stored_range)
     {
         view_shape_type shape = {3, 4};
@@ -1460,6 +1495,45 @@ namespace xt
         view.flat(1) = 40;
         view.flat(2) = 50;
         EXPECT_EQ(a, b);
+    }
+
+    TEST(xview, assign_through_multiple_leading_newaxis)
+    {
+        SUBCASE("updates the underlying tensor for every element")
+        {
+            xt::xtensor<uint8_t, 2> tensor = xt::zeros<uint8_t>({4, 3});
+            auto view = xt::view(tensor, xt::newaxis(), xt::newaxis(), xt::newaxis(), xt::all(), xt::all());
+
+            uint8_t value = 0;
+            for (std::size_t row = 0; row < 4; ++row)
+            {
+                for (std::size_t col = 0; col < 3; ++col)
+                {
+                    view(std::size_t{0}, std::size_t{0}, std::size_t{0}, row, col) = value;
+                    EXPECT_EQ(tensor(row, col), value);
+                    ++value;
+                }
+            }
+
+            EXPECT_EQ(tensor, xt::arange<uint8_t>(12).reshape({4, 3}));
+        }
+
+        SUBCASE("preserves bool assignment semantics")
+        {
+            xt::xtensor<bool, 2> tensor = xt::zeros<bool>({4, 3});
+            auto view = xt::view(tensor, xt::newaxis(), xt::newaxis(), xt::newaxis(), xt::all(), xt::all());
+
+            for (std::size_t row = 0; row < 4; ++row)
+            {
+                for (std::size_t col = 0; col < 3; ++col)
+                {
+                    view(std::size_t{0}, std::size_t{0}, std::size_t{0}, row, col) = true;
+                    EXPECT_TRUE(tensor(row, col));
+                }
+            }
+
+            EXPECT_EQ(tensor, xt::ones<bool>({4, 3}));
+        }
     }
 
     TEST(xview, in_bounds)

@@ -58,4 +58,36 @@ namespace xt
         dump_csv(res, data);
         ASSERT_EQ("1,2,3,4\n10,12,15,18\n", res.str());
     }
+
+    TEST(xcsv, load_binary_matrix)
+    {
+        const std::string source = "1,0,1\n"
+                                   "0,1,1";
+
+        std::stringstream source_stream(source);
+
+        const xtensor<uint8_t, 2> res = load_csv<uint8_t>(source_stream);
+
+        const xtensor<uint8_t, 2> exp{{1, 0, 1}, {0, 1, 1}};
+
+        EXPECT_TRUE(all(equal(res, exp)));
+    }
+
+    TEST(xcsv, load_string_trims_cells)
+    {
+        const std::string source = "  alpha  , beta,gamma   \n delta,  epsilon , zeta  ";
+
+        std::stringstream source_stream(source);
+
+        const xtensor<std::string, 2> res = load_csv<std::string>(source_stream);
+
+        EXPECT_EQ(res.shape()[0], std::size_t(2));
+        EXPECT_EQ(res.shape()[1], std::size_t(3));
+        EXPECT_EQ(res(0, 0), "alpha");
+        EXPECT_EQ(res(0, 1), "beta");
+        EXPECT_EQ(res(0, 2), "gamma");
+        EXPECT_EQ(res(1, 0), "delta");
+        EXPECT_EQ(res(1, 1), "epsilon");
+        EXPECT_EQ(res(1, 2), "zeta");
+    }
 }
