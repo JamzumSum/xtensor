@@ -3019,11 +3019,7 @@ namespace xt
     inline auto interp(const E1& x, const E2& xp, const E3& fp, T left, T right)
     {
         using size_type = common_size_type_t<E1, E2, E3>;
-        using value_type = std::common_type_t<
-            typename E1::value_type,
-            typename E2::value_type,
-            typename E3::value_type
-        >;
+        using value_type = std::common_type_t<typename E1::value_type, typename E2::value_type, typename E3::value_type>;
 
         // basic checks
         XTENSOR_PRECONDITION(
