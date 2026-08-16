@@ -3036,10 +3036,10 @@ namespace xt
         // counter in "x": from left
         size_type i = 0;
 
-        // fill f[i] for x[i] <= xp[0]
+        // fill f[i] for x[i] < xp[0]
         for (; i < x.size(); ++i)
         {
-            if (x[i] > xp[0])
+            if (x[i] >= xp[0])
             {
                 break;
             }
@@ -3050,10 +3050,10 @@ namespace xt
         // (index counts one right, to terminate the reverse loop, without risking being negative)
         size_type imax = x.size();
 
-        // fill f[i] for x[-1] >= xp[-1]
+        // fill f[i] for x[i] > xp[-1]
         for (; imax > 0; --imax)
         {
-            if (x[imax - 1] < xp[xp.size() - 1])
+            if (x[imax - 1] <= xp[xp.size() - 1])
             {
                 break;
             }

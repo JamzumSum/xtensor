@@ -933,6 +933,18 @@ namespace xt
 #endif
     }
 
+    TEST(xmath, interp_endpoints_match_numpy)
+    {
+        xt::xtensor<double, 1> xp = {0.0, 1.0, 3.0};
+        xt::xtensor<double, 1> fp = {0.0, 10.0, 20.0};
+        xt::xtensor<double, 1> x = {0.0, 3.0};
+        xt::xtensor<double, 1> expected = {0.0, 20.0};
+
+        auto result = xt::interp(x, xp, fp, 100.0, 200.0);
+
+        EXPECT_EQ(result, expected);
+    }
+
     TEST(xmath, cov)
     {
         xt::xarray<double> x = {0.0, 1.0, 2.0};
