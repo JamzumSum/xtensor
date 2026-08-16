@@ -8,6 +8,7 @@
  ****************************************************************************/
 
 #include <type_traits>
+#include <vector>
 
 #if (defined(__GNUC__) && !defined(__clang__))
 #pragma GCC diagnostic push
@@ -251,5 +252,31 @@ namespace xt
         xt::random::seed(123);
         auto r2 = xt::random::permutation(ac1);
         EXPECT_EQ(a1, r2);
+    }
+
+    TEST(xrandom, poisson_geometric_default_type)
+    {
+        // poisson and geometric have no parameter from which T can be deduced,
+        // so they require a default T (= int) to be callable without explicit template arg.
+        auto p = random::poisson({3, 3}, 1.0);
+        static_assert(std::is_same<decltype(p)::value_type, int>::value, "poisson default T must be int");
+
+        auto g = random::geometric({3, 3}, 0.5);
+        static_assert(std::is_same<decltype(g)::value_type, int>::value, "geometric default T must be int");
+
+        auto p2 = random::poisson({3, 3});
+        static_assert(std::is_same<decltype(p2)::value_type, int>::value, "poisson default T must be int");
+
+        auto p3 = random::poisson(std::vector<std::size_t>{3, 3}, 1.0);
+        static_assert(
+            std::is_same<decltype(p3)::value_type, int>::value,
+            "poisson generic overload must default T to int"
+        );
+
+        auto g3 = random::geometric(std::vector<std::size_t>{3, 3}, 0.5);
+        static_assert(
+            std::is_same<decltype(g3)::value_type, int>::value,
+            "geometric generic overload must default T to int"
+        );
     }
 }
