@@ -3265,7 +3265,7 @@ namespace xt
             {
                 for (std::size_t j = 0; j < nv; j++)
                 {
-                    out(i) += e1(j) * e2(j + i);
+                    out(i) += e1(i + j) * e2(nv - 1 - j);
                 }
             }
             return out;

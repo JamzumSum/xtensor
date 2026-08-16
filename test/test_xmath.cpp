@@ -934,6 +934,28 @@ namespace xt
         EXPECT_EQ(result, expected);
     }
 
+    TEST(xmath, convolve_valid_a_longer)
+    {
+        xt::xarray<double> x = {1.0, 2.0, 3.0, 4.0, 5.0};
+        xt::xarray<double> y = {1.0, 2.0, 3.0};
+        xt::xarray<double> expected = {10.0, 16.0, 22.0};
+
+        auto result = xt::convolve(x, y, xt::convolve_mode::valid());
+
+        EXPECT_EQ(result, expected);
+    }
+
+    TEST(xmath, convolve_valid_v_longer)
+    {
+        xt::xarray<double> x = {1.0, 1.0};
+        xt::xarray<double> y = {1.0, 2.0, 3.0};
+        xt::xarray<double> expected = {3.0, 5.0};
+
+        auto result = xt::convolve(x, y, xt::convolve_mode::valid());
+
+        EXPECT_EQ(result, expected);
+    }
+
     TEST(xmath, unwrap)
     {
         {
