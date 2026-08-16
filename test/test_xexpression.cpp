@@ -7,12 +7,15 @@
  * The full license is in the file LICENSE, distributed with this software. *
  ****************************************************************************/
 
+#include <iterator>
 #include <sstream>
 
 #include "xtensor/xarray.hpp"
 #include "xtensor/xexpression.hpp"
 #include "xtensor/xio.hpp"
 #include "xtensor/xmath.hpp"
+#include "xtensor/xrandom.hpp"
+#include "xtensor/xtensor.hpp"
 
 #include "test_common_macros.hpp"
 
@@ -114,6 +117,44 @@ namespace xt
         auto expr = fun();
         xarray<double> a = {{1, 2, 3, 4}, {5, 6, 7, 8}};
         EXPECT_EQ(expr, a * a);
+    }
+
+    TEST(xexpression, shared_reducer_result)
+    {
+        std::size_t n = 1000;
+        std::size_t m = 9;
+        std::size_t o = 12;
+
+        xtensor<double, 3> tensor = random::rand({n, m, o}, -20., 20.);
+        auto result = make_xshared(sum(tensor, {2}));
+        auto expected = sum(tensor, {2});
+
+        EXPECT_EQ(result.dimension(), std::size_t(2));
+        EXPECT_EQ(result.shape(), expected.shape());
+        EXPECT_TRUE(all(equal(result, expected)));
+
+        EXPECT_EQ(
+            std::distance(result.linear_begin(), result.linear_end()),
+            std::distance(expected.cbegin(), expected.cend())
+        );
+        EXPECT_EQ(
+            std::distance(result.linear_rbegin(), result.linear_rend()),
+            std::distance(expected.cbegin(), expected.cend())
+        );
+
+        const auto& cresult = result;
+        EXPECT_EQ(
+            std::distance(cresult.linear_begin(), cresult.linear_end()),
+            std::distance(expected.cbegin(), expected.cend())
+        );
+        EXPECT_EQ(
+            std::distance(cresult.linear_rbegin(), cresult.linear_rend()),
+            std::distance(expected.cbegin(), expected.cend())
+        );
+        EXPECT_EQ(
+            std::distance(cresult.linear_crbegin(), cresult.linear_crend()),
+            std::distance(expected.cbegin(), expected.cend())
+        );
     }
 
     TEST(xexpression, temporary_type)
