@@ -3022,6 +3022,10 @@ namespace xt
         using value_type = typename E3::value_type;
 
         // basic checks
+        XTENSOR_PRECONDITION(
+            xp.size() > 1 && fp.size() == xp.size(),
+            "interp: xp must contain at least 2 points and fp must have the same length"
+        );
         XTENSOR_ASSERT(xp.dimension() == 1);
         XTENSOR_ASSERT(std::is_sorted(x.cbegin(), x.cend()));
         XTENSOR_ASSERT(std::is_sorted(xp.cbegin(), xp.cend()));
@@ -3183,6 +3187,7 @@ namespace xt
     template <class E1, class E2, class E3>
     inline auto interp(const E1& x, const E2& xp, const E3& fp)
     {
+        XTENSOR_PRECONDITION(fp.size() > 0, "interp: fp must be non-empty");
         return interp(x, xp, fp, fp[0], fp[fp.size() - 1]);
     }
 

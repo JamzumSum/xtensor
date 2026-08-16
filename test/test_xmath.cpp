@@ -903,6 +903,36 @@ namespace xt
         }
     }
 
+    TEST(xmath, interp_empty_xp_throws)
+    {
+#if !defined(XTENSOR_DISABLE_EXCEPTIONS)
+        xt::xtensor<double, 1> xp = {};
+        xt::xtensor<double, 1> fp = {};
+        xt::xtensor<double, 1> x = {0.5};
+        XT_ASSERT_THROW(xt::interp(x, xp, fp), std::runtime_error);
+#endif
+    }
+
+    TEST(xmath, interp_empty_fp_throws)
+    {
+#if !defined(XTENSOR_DISABLE_EXCEPTIONS)
+        xt::xtensor<double, 1> xp = {0.0, 1.0, 3.0};
+        xt::xtensor<double, 1> fp = {};
+        xt::xtensor<double, 1> x = {0.5};
+        XT_ASSERT_THROW(xt::interp(x, xp, fp), std::runtime_error);
+#endif
+    }
+
+    TEST(xmath, interp_mismatched_fp_throws)
+    {
+#if !defined(XTENSOR_DISABLE_EXCEPTIONS)
+        xt::xtensor<double, 1> xp = {0.0, 1.0, 3.0};
+        xt::xtensor<double, 1> fp = {0.0, 1.0};
+        xt::xtensor<double, 1> x = {0.5};
+        XT_ASSERT_THROW(xt::interp(x, xp, fp), std::runtime_error);
+#endif
+    }
+
     TEST(xmath, cov)
     {
         xt::xarray<double> x = {0.0, 1.0, 2.0};
