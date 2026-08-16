@@ -957,6 +957,14 @@ namespace xt
         EXPECT_EQ(result, expected);
     }
 
+    TEST(xmath, variance_ddof_gt_size_throws)
+    {
+#if !defined(XTENSOR_DISABLE_EXCEPTIONS)
+        xt::xarray<double> v = {1.0, 2.0};
+        XT_ASSERT_THROW(xt::variance(v, 3u), std::runtime_error);
+#endif
+    }
+
     TEST(xmath, cov)
     {
         xt::xarray<double> x = {0.0, 1.0, 2.0};

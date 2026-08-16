@@ -1904,7 +1904,10 @@ namespace xt
             using value_type = typename std::conditional_t<std::is_same<T, void>::value, double, T>;
             using size_type = typename std::decay_t<E>::size_type;
             const size_type size = e.size();
-            XTENSOR_ASSERT(static_cast<size_type>(ddof) <= size);
+            XTENSOR_PRECONDITION(
+                static_cast<size_type>(ddof) <= size,
+                "mean/variance: ddof must not exceed the number of elements"
+            );
             auto s = sum<T>(std::forward<E>(e), es);
             return std::move(s) / static_cast<value_type>((size - static_cast<size_type>(ddof)));
         }
