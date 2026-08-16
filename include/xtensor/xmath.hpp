@@ -3255,7 +3255,9 @@ namespace xt
         template <class E1, class E2>
         inline auto convolve_impl(E1&& e1, E2&& e2, convolve_mode::valid)
         {
-            using value_type = typename std::decay<E1>::type::value_type;
+            using value_type = std::common_type_t<
+                typename std::decay<E1>::type::value_type,
+                typename std::decay<E2>::type::value_type>;
 
             const std::size_t na = e1.size();
             const std::size_t nv = e2.size();
@@ -3274,7 +3276,9 @@ namespace xt
         template <class E1, class E2>
         inline auto convolve_impl(E1&& e1, E2&& e2, convolve_mode::full)
         {
-            using value_type = typename std::decay<E1>::type::value_type;
+            using value_type = std::common_type_t<
+                typename std::decay<E1>::type::value_type,
+                typename std::decay<E2>::type::value_type>;
 
             const std::size_t na = e1.size();
             const std::size_t nv = e2.size();
@@ -3311,7 +3315,7 @@ namespace xt
             XTENSOR_THROW(std::runtime_error, "Invalid dimentions convolution arguments must be 1D expressions");
         }
 
-        XTENSOR_ASSERT(a.size() > 0 && v.size() > 0);
+        XTENSOR_PRECONDITION(a.size() > 0 && v.size() > 0, "convolve: arguments must be non-empty 1D expressions");
 
         // swap them so a is always the longest one
         if (a.size() < v.size())

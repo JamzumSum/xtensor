@@ -956,6 +956,30 @@ namespace xt
         EXPECT_EQ(result, expected);
     }
 
+    TEST(xmath, convolve_mixed_types)
+    {
+        xt::xarray<int> x = {1, 2, 3};
+        xt::xarray<double> y = {0.5, 0.5};
+        xt::xarray<double> expected = {0.5, 1.5, 2.5, 1.5};
+
+        auto result = xt::convolve(x, y, xt::convolve_mode::full());
+
+        EXPECT_EQ(result, expected);
+    }
+
+    TEST(xmath, convolve_empty_throws)
+    {
+#if !defined(XTENSOR_DISABLE_EXCEPTIONS)
+        xt::xarray<double> x = xt::zeros<double>({0});
+        xt::xarray<double> y = {1.0, 2.0};
+
+        XT_ASSERT_THROW(xt::convolve(x, y, xt::convolve_mode::valid()), std::runtime_error);
+        XT_ASSERT_THROW(xt::convolve(x, y, xt::convolve_mode::full()), std::runtime_error);
+        XT_ASSERT_THROW(xt::convolve(y, x, xt::convolve_mode::valid()), std::runtime_error);
+        XT_ASSERT_THROW(xt::convolve(y, x, xt::convolve_mode::full()), std::runtime_error);
+#endif
+    }
+
     TEST(xmath, unwrap)
     {
         {
