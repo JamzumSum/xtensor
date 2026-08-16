@@ -945,6 +945,18 @@ namespace xt
         EXPECT_EQ(result, expected);
     }
 
+    TEST(xmath, interp_promotes_value_type)
+    {
+        xt::xtensor<double, 1> xp = {0.0, 1.0, 3.0};
+        xt::xtensor<int, 1> fp = {0, 10, 20};
+        xt::xtensor<double, 1> x = {0.5, 1.5, 2.0};
+        xt::xtensor<double, 1> expected = {5.0, 12.5, 15.0};
+
+        auto result = xt::interp(x, xp, fp);
+
+        EXPECT_EQ(result, expected);
+    }
+
     TEST(xmath, cov)
     {
         xt::xarray<double> x = {0.0, 1.0, 2.0};
