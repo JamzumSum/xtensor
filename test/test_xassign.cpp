@@ -13,6 +13,7 @@
 
 #include "xtensor/xarray.hpp"
 #include "xtensor/xassign.hpp"
+#include "xtensor/xmanipulation.hpp"
 #include "xtensor/xnoalias.hpp"
 #include "xtensor/xtensor.hpp"
 
@@ -166,5 +167,11 @@ namespace xt
             EXPECT_EQ(a.shape(0), 2);
             EXPECT_EQ(a.shape(1), 3);
         }
+    }
+
+    TEST(xassign, fixed_dimension_mismatch)
+    {
+        auto a = xt::xtensor<float, 1>::from_shape({2});
+        XT_ASSERT_THROW(a = xt::expand_dims(a, 0), std::runtime_error);
     }
 }
