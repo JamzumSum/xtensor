@@ -26,6 +26,35 @@ cmake --build build --target test_xtensor_lib --parallel 8
 ctest -R ^xtest$ --output-on-failure
 ```
 
+## 使用 FetchContent 集成
+
+下游项目可用 CMake `FetchContent` 直接引入本 fork。xtl,以及在 `-DXTENSOR_USE_XSIMD=ON` 时的 xsimd,会由本 fork 的 CMake 自动获取(find_package 优先,找不到则 FetchContent),无需手动处理。
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(xtensor
+    GIT_REPOSITORY https://github.com/JamzumSum/xtensor.git
+    GIT_TAG        fork)          # 建议固定为具体 commit/tag 以保证可复现
+FetchContent_MakeAvailable(xtensor)
+
+# 线性代数(可选,需要系统 BLAS/LAPACK)
+FetchContent_Declare(xtensor-blas
+    GIT_REPOSITORY https://github.com/xtensor-stack/xtensor-blas.git
+    GIT_TAG        0.21.0)
+FetchContent_MakeAvailable(xtensor-blas)
+
+target_link_libraries(myapp PRIVATE xtensor xtensor-blas)
+```
+
+说明:
+
+- 启用 SIMD 时加 `-DXTENSOR_USE_XSIMD=ON`;xtl / xsimd 都会自动获取。
+- 只需 xtensor(不含 linalg)时,省略 `xtensor-blas` 的 `FetchContent` 与最后的 `target_link_libraries`。
+- `xtensor-blas` 需要系统 BLAS/LAPACK;也可用 `-DXTENSOR_USE_FLENS_BLAS=ON` 走纯头实现。
+- `xtensor` 的 `GIT_TAG` 示例用分支 `fork`;生产构建建议固定到 commit SHA 或发布 tag。
+- 缺依赖时本 fork 默认自动 FetchContent,可用 `-DXTENSOR_FETCH_DEPS=OFF` 禁用。
+
 ## 原 README
 
 原始 README(库介绍、安装、使用示例、NumPy 对照表、性能等)请见 [README.old.md](README.old.md)。
