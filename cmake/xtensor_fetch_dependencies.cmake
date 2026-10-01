@@ -30,6 +30,12 @@ function(xtensor_find_or_fetch name version repo tag)
             "Install it or configure with -DXTENSOR_FETCH_DEPS=ON.")
     endif()
 
+    # CMake >= 4.0 removed compatibility with cmake_minimum_required() < 3.5,
+    # which some pinned header-only dependencies still declare (xtl 0.7.5 uses 3.1).
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.31")
+        set(CMAKE_POLICY_VERSION_MINIMUM "3.5")
+    endif()
+
     message(STATUS "${name} not found, fetching ${repo} @ ${tag}")
     include(FetchContent)
     FetchContent_Declare(${name}
