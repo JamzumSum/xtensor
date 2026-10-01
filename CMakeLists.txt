@@ -54,19 +54,9 @@ if(XTENSOR_USE_TBB AND XTENSOR_USE_OPENMP)
 endif()
 
 if(XTENSOR_USE_XSIMD)
-    set(xsimd_REQUIRED_VERSION 11.0.0)
-    if(TARGET xsimd)
-        set(xsimd_VERSION ${XSIMD_VERSION_MAJOR}.${XSIMD_VERSION_MINOR}.${XSIMD_VERSION_PATCH})
-        # Note: This is not SEMVER compatible comparison
-        if(${xsimd_VERSION} VERSION_LESS ${xsimd_REQUIRED_VERSION})
-            message(ERROR "Mismatch xsimd versions. Found '${xsimd_VERSION}' but requires: '${xsimd_REQUIRED_VERSION}'")
-        else()
-            message(STATUS "Found xsimd v${xsimd_VERSION}")
-        endif()
-    else()
-        find_package(xsimd ${xsimd_REQUIRED_VERSION} REQUIRED)
-        message(STATUS "Found xsimd: ${xsimd_INCLUDE_DIRS}/xsimd")
-    endif()
+    set(xsimd_REQUIRED_VERSION 13.2.0)
+    xtensor_find_or_fetch(xsimd ${xsimd_REQUIRED_VERSION}
+        https://github.com/xtensor-stack/xsimd.git ${xsimd_REQUIRED_VERSION})
 endif()
 
 if(XTENSOR_USE_TBB)
