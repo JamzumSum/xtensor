@@ -9,7 +9,7 @@ This is a fork pinning the `0.25.0` release (`XTENSOR_VERSION_*` in `include/xte
 ## Build & test
 
 - Tests use **doctest**, not GTest — README.md and docs/source/dev-build-options.rst still say gtest (stale). The `DOWNLOAD_GTEST` / `GTEST_SRC_DIR` options are dead; `test/CMakeLists.txt` requires `find_package(doctest REQUIRED)`.
-- `environment-dev.yml` (conda/mamba, conda-forge) provides everything needed: cmake, ninja, xtl=0.7.5, xsimd=11.1.0, nlohmann_json, doctest=2.4.7, pre-commit.
+- `environment-dev.yml` (conda/mamba, conda-forge) provides everything needed: cmake, ninja, xtl=0.7.5, xsimd=13.2.0, nlohmann_json, doctest=2.4.7, pre-commit.
 - Full suite:
   ```bash
   mamba env create -f environment-dev.yml
