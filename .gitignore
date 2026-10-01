@@ -62,3 +62,6 @@ __pycache__
 
 # Generated files
 *.pc
+
+# Superpowers working docs (specs/plans kept out of version control)
+docs/superpowers/
