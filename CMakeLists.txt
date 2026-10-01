@@ -7,8 +7,13 @@
 # The full license is in the file LICENSE, distributed with this software. #
 ############################################################################
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 project(xtensor CXX)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(xtensor_fetch_dependencies)
+
+option(XTENSOR_FETCH_DEPS "Fetch missing dependencies (xtl, xsimd) with FetchContent" ON)
 
 set(XTENSOR_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -30,18 +35,8 @@ message(STATUS "Building xtensor v${${PROJECT_NAME}_VERSION}")
 # ============
 
 set(xtl_REQUIRED_VERSION 0.7.5)
-if(TARGET xtl)
-    set(xtl_VERSION ${XTL_VERSION_MAJOR}.${XTL_VERSION_MINOR}.${XTL_VERSION_PATCH})
-    # Note: This is not SEMVER compatible comparison
-    if(${xtl_VERSION} VERSION_LESS ${xtl_REQUIRED_VERSION})
-        message(ERROR "Mismatch xtl versions. Found '${xtl_VERSION}' but requires: '${xtl_REQUIRED_VERSION}'")
-    else()
-        message(STATUS "Found xtl v${xtl_VERSION}")
-    endif()
-else()
-    find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
-    message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
-endif()
+xtensor_find_or_fetch(xtl ${xtl_REQUIRED_VERSION}
+    https://github.com/xtensor-stack/xtl.git 0.7.5)
 
 find_package(nlohmann_json 3.1.1 QUIET)
 
