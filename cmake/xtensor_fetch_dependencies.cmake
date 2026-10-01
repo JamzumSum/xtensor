@@ -24,7 +24,7 @@ function(xtensor_find_or_fetch name version repo tag)
         return()
     endif()
 
-    if(XTENSOR_FETCH_DEPS STREQUAL "OFF")
+    if(DEFINED XTENSOR_FETCH_DEPS AND NOT XTENSOR_FETCH_DEPS)
         message(FATAL_ERROR
             "${name} (>= ${version}) not found and XTENSOR_FETCH_DEPS=OFF. "
             "Install it or configure with -DXTENSOR_FETCH_DEPS=ON.")
