@@ -36,7 +36,7 @@ message(STATUS "Building xtensor v${${PROJECT_NAME}_VERSION}")
 
 set(xtl_REQUIRED_VERSION 0.7.5)
 xtensor_find_or_fetch(xtl ${xtl_REQUIRED_VERSION}
-    https://github.com/xtensor-stack/xtl.git 0.7.5)
+    https://github.com/xtensor-stack/xtl.git ${xtl_REQUIRED_VERSION})
 
 find_package(nlohmann_json 3.1.1 QUIET)
 
