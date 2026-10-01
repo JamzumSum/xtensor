@@ -182,6 +182,11 @@ target_compile_features(xtensor INTERFACE cxx_std_14)
 
 target_link_libraries(xtensor INTERFACE xtl)
 
+if(XTENSOR_USE_XSIMD)
+    target_link_libraries(xtensor INTERFACE xsimd)
+    target_compile_definitions(xtensor INTERFACE XTENSOR_USE_XSIMD)
+endif()
+
 OPTION(XTENSOR_ENABLE_ASSERT "xtensor bound check" OFF)
 OPTION(XTENSOR_CHECK_DIMENSION "xtensor dimension check" OFF)
 OPTION(BUILD_TESTS "xtensor test suite" OFF)
