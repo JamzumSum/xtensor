@@ -187,6 +187,12 @@ if(XTENSOR_USE_XSIMD)
     target_compile_definitions(xtensor INTERFACE XTENSOR_USE_XSIMD)
 endif()
 
+if(XTENSOR_USE_TBB)
+    target_include_directories(xtensor INTERFACE ${TBB_INCLUDE_DIRS})
+    target_link_libraries(xtensor INTERFACE ${TBB_LIBRARIES})
+    target_compile_definitions(xtensor INTERFACE XTENSOR_USE_TBB)
+endif()
+
 OPTION(XTENSOR_ENABLE_ASSERT "xtensor bound check" OFF)
 OPTION(XTENSOR_CHECK_DIMENSION "xtensor dimension check" OFF)
 OPTION(BUILD_TESTS "xtensor test suite" OFF)
@@ -233,6 +239,7 @@ endif()
 if(XTENSOR_USE_OPENMP)
     # Link xtensor itself to OpenMP to propagate to user projects
     target_link_libraries(xtensor INTERFACE OpenMP::OpenMP_CXX_xtensor)
+    target_compile_definitions(xtensor INTERFACE XTENSOR_USE_OPENMP)
 endif()
 
 # Installation
